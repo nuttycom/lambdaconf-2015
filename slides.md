@@ -160,7 +160,7 @@ function on the former slide, which was 'const'.
 
 > "Write down the definition of a polymorphic function on a piece of paper. Tell me its type, but careful not to let me see the function's definition. I will tell you a theorem that the function satisfies." --[Wadler, 1989](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.38.9875&rep=rep1&type=pdf)
 
-- Note that this only says "I will tell you *a* theorem." 
+*Note that this only says "I will tell you `a` theorem."*
 
 ------
 
@@ -170,32 +170,41 @@ asdf :: ∀ a b. (a -> b) -> [a] -> [b]
   
 ~~~
 
-<div class="fragment">
 
-- Every value in the output is obtained by applying the function provided to a
-  member of the input.
+> - Every value in the output is obtained by applying the function provided to a
+    member of the input.
+> - *BUT* `List` gives us too much information.
 
-- `List` gives us too much information.
-  - could reverse the result
-  - could just pick the n'th value from the list, apply the function, and
-    repeat it indefinitely...
-
+<div class="notes">
+- could reverse the result
+- could just pick the n'th value from the list, apply the function, and
+  repeat it indefinitely...
 </div>
 
 ------
 
+<img src="./img/list_fns.png" width="800"/>
+
+(and many more)
+
+------
+
+## Code Reuse
+
 ~~~{.haskell }
 
-quux :: ∀ a b. [(a, b)] -> [a]
-quux xs = asdf first xs
--- quux = asdf first 
+firsts :: ∀ a b. [(a, b)] -> [a]
+firsts xs = asdf fst xs
+-- firsts = asdf fst 
   
 ~~~
 
-- This both excessively restrictive (must provide a list), and the type opens
+- This is both excessively restrictive (must provide a list), and the type opens
   up more possibilities than we really want.
 
 <div class="notes">
+
+This is just a small motivating example.
 
 If `List` gives us too much information, how can we recover generality?
 To start with, remember that 
@@ -218,21 +227,9 @@ instance Functor List where
   
 ~~~
 
-<div class="fragment">
-
-~~~{.haskell }
-
-quux :: ∀ f a b. Functor f => f (a, b) -> f a
-quux xs = asdf first xs
--- quux = asdf first 
-  
-~~~
-
-</div>
-
 ------
 
-## Getting Specific
+## Laws
 
 ~~~{.haskell }
 
@@ -249,6 +246,20 @@ asdf :: ∀ a. [a] -> [a]
 <div class="fragment">
 
 - This is a nice and complete solution, 
+
+</div>
+
+------
+
+<div class="fragment">
+
+~~~{.haskell }
+
+quux :: ∀ f a b. Functor f => f (a, b) -> f a
+quux xs = asdf first xs
+-- quux = asdf first 
+  
+~~~
 
 </div>
 
