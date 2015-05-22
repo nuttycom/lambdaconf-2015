@@ -1,12 +1,17 @@
 SOURCE = slides.md
-STYLE = style.txt
+STYLE = style.html
+THEME = night
 
 PANDOC = pandoc
 
-all: reveal
+all: postprocess
 
 clean:
 	rm -f index.html
 
+postprocess: reveal
+	sed -i'' -e 's/reveal.min/reveal/' index.html
+	sed -i'' -e "s/simple.css/$(THEME).css/" index.html
+
 reveal: $(SOURCE) $(STYLE)
-	$(PANDOC) -f markdown --smart -t revealjs -V theme=night --include-in-header=$(STYLE) -s $(SOURCE) -o index.html
+	$(PANDOC) -f markdown --smart -t revealjs -V theme=$(THEME) --include-in-header=$(STYLE) -s $(SOURCE) -o index.html
